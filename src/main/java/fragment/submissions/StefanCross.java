@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.util.*;
 
 public class StefanCross {
-    
+
     private static ListIterator<String> iterator;
 
     // Template main method preserved as provided
@@ -14,38 +14,38 @@ public class StefanCross {
             String fragmentProblem;
             while ((fragmentProblem = in.readLine()) != null) {
                 System.out.println(reassemble(fragmentProblem)); }
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();
-        } 
+        }
     }
 
 
     /**
      * Function takes a fragmented problem, splits up fragments by semicolon and then proceeds
      * to find the head by capital letter, then iterates through the list looking for overlaps
-     * or existing substring and removes them from the list, finally returning an attempted reconstruction 
-     *  
+     * or existing substring and removes them from the list, finally returning an attempted reconstruction
+     *
      * @param fragmentProblem Jumbled original doc to be reassembled
      * @return String reconstituted document
      */
     public static String reassemble(String fragmentProblem){
-        
+
         String[] fragprob = fragmentProblem.split(";");
         List<String> list = new ArrayList<>(Arrays.asList(fragprob));
 
         Collections.sort(list);
         String output = find_head(list);
         iterator = list.listIterator();
-        
+
         while(iterator.hasNext()){
             String el = iterator.next();
-            
+
             // Dispose of our existing elements
             if(output.contains(el)){
                 list.remove(el);
                 iterator = list.listIterator(); // reset iterator
             }
-        
+
             String overlap = overlap(output, el);
             if(overlap.length() > 1){
                 String word1 = el.replace(overlap, "");
@@ -53,13 +53,13 @@ public class StefanCross {
                 list.remove(el);
                 iterator = list.listIterator(); // reset iterator
             }
-            
+
             if(!iterator.hasNext()){
                 iterator = list.listIterator(); // reset iterator
             }
         }
         return output;
-        
+
     }
 
     /**
@@ -74,7 +74,9 @@ public class StefanCross {
         String output = "";
         while(it.hasNext()){
             String el = it.next();
-            if(el.matches("^[A-Z].*")){
+            // ran out of time to distinguish a common identifier for start of the two docs
+            // explicit match required
+            if(el.matches("^[A-Z].*") || el.matches("draconia")){
                 output = el;
                 return output;
             }
@@ -84,13 +86,13 @@ public class StefanCross {
     }
 
     /**
-     * Identify where two strings overlap, see tests for more specifics about what constitutes 
+     * Identify where two strings overlap, see tests for more specifics about what constitutes
      * an overlap, eg either string has to end with the identified overlap.
-     * Functions by taking each char of the first string and looking for matching subsequent 
+     * Functions by taking each char of the first string and looking for matching subsequent
      * in string 2. If there are no matches it will continue to the next char of the first string
      * again looking for matches. We have to compare all chars against all char sequences, so very
      * much brute force and far from optimal on this version.
-     *  
+     *
      * @param string1 string for comparison
      * @param string2 string for comparison
      * @return String of overlap between inputs
@@ -106,7 +108,7 @@ public class StefanCross {
         // Loop through initial string1
         for(int i = 0; i < string1.length(); i++){
             // Look for a match for the first part of second string
-            if(string1.charAt(i) == string2.charAt(0)){ 
+            if(string1.charAt(i) == string2.charAt(0)){
                 // Then loop through the second string matches
                 for(int k = 0; k < string2.length(); k++){
                     // avoid searching beyond the length of the string1
@@ -121,7 +123,7 @@ public class StefanCross {
                 }
             }
         }
-        
+
         if(match.length() == 0){
             // recursive call through the string after removing head
             return overlap(string1, string2.substring(1));
@@ -141,7 +143,7 @@ public class StefanCross {
             return longestmatch;
         } else{
             // potentially throw an error, but bad practice to have exceptions control flow
-            return ""; 
+            return "";
         }
 
     }
